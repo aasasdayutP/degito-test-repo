@@ -13,22 +13,18 @@ export default function App() {
     fetchClients();
   }, []);
 
-  function fetchProjects() {
-    getProjects().then(setProjects);
+  async function fetchProjects() {
+    const data = await getProjects();
+    setProjects(data);
   }
 
   function fetchClients() {
     getClients().then(setClients);
   }
 
-  function handleStatusChange(projectId, newStatus) {
-    updateStatus(projectId, newStatus).then(() => {
-      const project = projects.find((p) => p.id === projectId);
-      if (project) {
-        project.status = newStatus;
-      }
-      setProjects(projects);
-    });
+  async function handleStatusChange(projectId, newStatus) {
+    await updateStatus(projectId, newStatus);
+    fetchProjects();
   }
 
   function handleCreate(e) {
