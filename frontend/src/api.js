@@ -13,8 +13,12 @@ async function request(path, options = {}) {
   return data;
 }
 
-export function getProjects() {
-  return request("/api/projects");
+export function getProjects(clientName = "") {
+  const query = clientName.trim()
+    ? `?clientName=${encodeURIComponent(clientName.trim())}`
+    : "";
+
+  return request(`/api/projects${query}`);
 }
 
 export function getClients() {

@@ -8,14 +8,28 @@ export default function App() {
   const [clients, setClients] = useState([]);
   const [newProject, setNewProject] = useState({ name: "", client_id: "" });
   const [error, setError] = useState("");
+  const [searchClient, setSearchClient] = useState("");
 
   useEffect(() => {
-    fetchProjects();
     fetchClients();
   }, []);
 
-  async function fetchProjects() {
-    const data = await getProjects();
+  useEffect(() => {
+    const timer = setTimeout(async () => {
+      try {
+        setError("");
+        await fetchProjects(searchClient);
+      } catch (err) {
+        setError(err.message);
+      }
+    }, 150);
+      
+    return () => clearTimeout(timer);
+
+  }, [searchClient]);
+
+  async function fetchProjects(clientName = "") {
+    const data = await getProjects(clientName);
     setProjects(data);
   }
 
@@ -39,6 +53,17 @@ export default function App() {
       });
       setNewProject({ name: "", client_id: "" });
       fetchProjects();
+    } catch (err) {
+      setError(err.message);
+    }
+  }
+
+  async function handleSearch(e) {
+    e.preventDefault();
+
+    try {
+      setError("");
+      await fetchProjects(searchClient);
     } catch (err) {
       setError(err.message);
     }
@@ -83,13 +108,25 @@ export default function App() {
       </section>
 
       <section className="project-list">
-        <h2>Projects</h2>
-        <table>
+        <div className="project-list-header">
+          <h2>Projects</h2>
+          <form onSubmit={handleSearch} className="search-form">
+            <input
+              type="text"
+              placeholder="Search by client name"
+              value={searchClient}
+              onChange={(e) => setSearchClient(e.target.value)}
+            />
+            <button type="submit">Search</button>
+          </form>
+        </div>
+        <table >
           <thead>
             <tr>
               <th>Project</th>
               <th>Client</th>
               <th>Status</th>
+              <th>          </th>
             </tr>
           </thead>
           <tbody>
@@ -99,6 +136,8 @@ export default function App() {
                 <td>{p.client_name}</td>
                 <td>
                   <span className="status-badge">{p.status}</span>
+                </td> 
+                <td>
                   <select
                     defaultValue=""
                     onChange={(e) => {
