@@ -7,6 +7,7 @@ export default function App() {
   const [projects, setProjects] = useState([]);
   const [clients, setClients] = useState([]);
   const [newProject, setNewProject] = useState({ name: "", client_id: "" });
+  const [error, setError] = useState("");
 
   useEffect(() => {
     fetchProjects();
@@ -27,15 +28,20 @@ export default function App() {
     fetchProjects();
   }
 
-  function handleCreate(e) {
+  async function handleCreate(e) {
     e.preventDefault();
-    createProject({
-      name: newProject.name,
-      client_id: Number(newProject.client_id),
-    }).then(() => {
+    try {
+      setError("");
+
+      await createProject({
+        name: newProject.name,
+        client_id: Number(newProject.client_id),
+      });
       setNewProject({ name: "", client_id: "" });
       fetchProjects();
-    });
+    } catch (err) {
+      setError(err.message);
+    }
   }
 
   return (
@@ -73,6 +79,7 @@ export default function App() {
           </select>
           <button type="submit">Add</button>
         </form>
+        {error && <p className="error-message">{error}</p>}
       </section>
 
       <section className="project-list">

@@ -70,3 +70,12 @@ td {
   font-size: 12px;
   margin-right: 8px;
 }
+
+.error-message {
+  display: inline-block;
+  color: #b91c1c;
+  background: #fee2e2;
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin-top: 8px;
+}

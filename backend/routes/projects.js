@@ -30,7 +30,9 @@ router.get("/", async (req, res) => {
 router.post("/", async (req, res) => {
   try {
     const { name, client_id, status } = req.body;
-    if (!name || !client_id) {
+
+    const projectName = name?.trim();
+    if (!projectName || !client_id) {
       return res.status(400).json({ error: "Name and client are required naja" });
     }
 
@@ -38,7 +40,7 @@ router.post("/", async (req, res) => {
       `INSERT INTO projects (name, client_id, status)
        VALUES ($1, $2, $3)
        RETURNING *`,
-      [name, client_id, status || "planning"]
+      [projectName, client_id, status || "planning"]
     );
 
     res.status(201).json(result.rows[0]);
