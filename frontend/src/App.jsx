@@ -55,12 +55,14 @@ export default function App() {
             onChange={(e) =>
               setNewProject({ ...newProject, name: e.target.value })
             }
+            required
           />
           <select
             value={newProject.client_id}
             onChange={(e) =>
               setNewProject({ ...newProject, client_id: e.target.value })
             }
+            required
           >
             <option value="">Select client</option>
             {clients.map((c) => (
